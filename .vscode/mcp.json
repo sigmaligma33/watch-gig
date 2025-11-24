@@ -1,0 +1,58 @@
+{
+	"inputs": [
+		{
+			"type": "promptString",
+			"id": "supabase-access-token",
+			"description": "Supabase personal access token",
+			"password": true
+		}
+	],
+	"servers": {
+		"supabase": {
+			"command": "/home/winzer/.nvm/versions/node/v22.17.1/bin/npx",
+			"args": [
+				"-y",
+				"@supabase/mcp-server-supabase@latest",
+				"--project-ref=lhcqmeudptjasfduucmd"
+			],
+			"env": {
+				"SUPABASE_ACCESS_TOKEN": "sbp_5df219d75227fd19a7d105193323683d160bdd90"
+			}
+		},
+    "context7": {
+      "command": "/home/winzer/.nvm/versions/node/v22.17.1/bin/npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"]
+    },
+    "allpepper-memory-bank": {
+      "command": "/home/winzer/.nvm/versions/node/v22.17.1/bin/npx",
+      "args": ["-y", "@allpepper/memory-bank-mcp"],
+      "env": {
+        "MEMORY_BANK_ROOT": "../docs/mem-bank"
+      },
+      "disabled": false,
+      "autoApprove": [
+        "memory_bank_read",
+        "memory_bank_write",
+        "memory_bank_update",
+        "list_projects",
+        "list_project_files"
+      ],
+      "start_on_launch": true
+    },
+    "memory": {
+        "command": "/home/winzer/.nvm/versions/node/v22.17.1/bin/npx",
+        "args": ["-y", "@modelcontextprotocol/server-memory"],
+        "env": {
+          "MEMORY_FILE_PATH": "../docs/memory.json"
+        },
+        "start_on_launch": true
+    },
+    "deepwiki": {
+      "type": "http",
+      "url": "https://mcp.deepwiki.com/sse",
+      "tools": ["ask_question", "read_wiki_contents", "read_wiki_structure"]
+    }
+  }
+
+	}
+}
