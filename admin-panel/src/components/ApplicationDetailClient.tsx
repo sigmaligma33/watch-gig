@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/Button'
@@ -19,8 +19,36 @@ export function ApplicationDetailClient({ application, profile }: ApplicationDet
   const [loading, setLoading] = useState(false)
   const [rejectionReason, setRejectionReason] = useState('')
   const [showRejectModal, setShowRejectModal] = useState(false)
+  const [frontImageUrl, setFrontImageUrl] = useState<string | null>(null)
+  const [backImageUrl, setBackImageUrl] = useState<string | null>(null)
   const router = useRouter()
   const supabase = createClient()
+
+  useEffect(() => {
+    const loadImages = async () => {
+      if (application.front_image_url) {
+        const { data } = await supabase.storage
+          .from('verification-documents')
+          .createSignedUrl(
+            application.front_image_url.replace('verification-documents/', ''),
+            3600
+          )
+        if (data?.signedUrl) setFrontImageUrl(data.signedUrl)
+      }
+
+      if (application.back_image_url) {
+        const { data } = await supabase.storage
+          .from('verification-documents')
+          .createSignedUrl(
+            application.back_image_url.replace('verification-documents/', ''),
+            3600
+          )
+        if (data?.signedUrl) setBackImageUrl(data.signedUrl)
+      }
+    }
+
+    loadImages()
+  }, [application.front_image_url, application.back_image_url, supabase])
 
   const handleApprove = async () => {
     setLoading(true)
@@ -84,12 +112,6 @@ export function ApplicationDetailClient({ application, profile }: ApplicationDet
                       `${profile?.first_name || ''} ${profile?.last_name || ''}`.trim() ||
                       profile?.phone_number || 
                       'Unknown User'
-
-  const getStorageUrl = (path: string | null) => {
-    if (!path) return null
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    return `${supabaseUrl}/storage/v1/object/public/${path}`
-  }
 
   return (
     <div className="space-y-6">
@@ -201,13 +223,20 @@ export function ApplicationDetailClient({ application, profile }: ApplicationDet
                     <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Front Image
                     </p>
-                    <div className="relative aspect-video bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
-                      <Image
-                        src={getStorageUrl(application.front_image_url) || ''}
-                        alt="Front ID"
-                        fill
-                        className="object-contain"
-                      />
+                    <div className="relative aspect-video bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+                      {frontImageUrl ? (
+                        <Image
+                          src={frontImageUrl}
+                          alt="Front ID"
+                          fill
+                          className="object-contain"
+                          unoptimized
+                        />
+                      ) : (
+                        <div className="flex items-center justify-center h-full">
+                          <p className="text-gray-500">Loading...</p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
@@ -217,13 +246,20 @@ export function ApplicationDetailClient({ application, profile }: ApplicationDet
                     <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Back Image
                     </p>
-                    <div className="relative aspect-video bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
-                      <Image
-                        src={getStorageUrl(application.back_image_url) || ''}
-                        alt="Back ID"
-                        fill
-                        className="object-contain"
-                      />
+                    <div className="relative aspect-video bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+                      {backImageUrl ? (
+                        <Image
+                          src={backImageUrl}
+                          alt="Back ID"
+                          fill
+                          className="object-contain"
+                          unoptimized
+                        />
+                      ) : (
+                        <div className="flex items-center justify-center h-full">
+                          <p className="text-gray-500">Loading...</p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}

@@ -3,6 +3,7 @@
 /.pnp
 .pnp.js
 /samples
+
 # Testing
 /coverage
 
@@ -12,6 +13,7 @@
 
 # Production
 /build
+build.log
 
 # Misc
 .DS_Store
@@ -32,3 +34,6 @@ yarn-error.log*
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+# Scripts output
+scripts/*.log

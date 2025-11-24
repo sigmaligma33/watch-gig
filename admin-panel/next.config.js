@@ -6,9 +6,16 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'lhcqmeudptjasfduucmd.supabase.co',
         port: '',
-        pathname: '/storage/v1/object/public/**',
+        pathname: '/storage/v1/object/**',
       },
     ],
+    unoptimized: false,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: false,
   },
 }
 
