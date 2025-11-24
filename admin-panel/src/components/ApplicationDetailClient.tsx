@@ -25,25 +25,42 @@ export function ApplicationDetailClient({ application, profile }: ApplicationDet
   const supabase = createClient()
 
   useEffect(() => {
+    const extractFilePath = (url: string) => {
+      // If it's a full URL, extract just the file path
+      if (url.startsWith('http')) {
+        // Extract path after the bucket name or user ID folder
+        const match = url.match(/\/([a-f0-9-]+\/[^?]+)$/i) || url.match(/public\/(.+)$/);
+        return match ? match[1] : url;
+      }
+      // If it already starts with bucket name, remove it
+      return url.replace('verification-documents/', '').replace(/^\/+/, '');
+    };
+
     const loadImages = async () => {
       if (application.front_image_url) {
-        const { data } = await supabase.storage
+        const filePath = extractFilePath(application.front_image_url);
+        const { data, error } = await supabase.storage
           .from('verification-documents')
-          .createSignedUrl(
-            application.front_image_url.replace('verification-documents/', ''),
-            3600
-          )
-        if (data?.signedUrl) setFrontImageUrl(data.signedUrl)
+          .createSignedUrl(filePath, 3600);
+        
+        if (error) {
+          console.error('Error loading front image:', error, 'Path:', filePath);
+        } else if (data?.signedUrl) {
+          setFrontImageUrl(data.signedUrl);
+        }
       }
 
       if (application.back_image_url) {
-        const { data } = await supabase.storage
+        const filePath = extractFilePath(application.back_image_url);
+        const { data, error } = await supabase.storage
           .from('verification-documents')
-          .createSignedUrl(
-            application.back_image_url.replace('verification-documents/', ''),
-            3600
-          )
-        if (data?.signedUrl) setBackImageUrl(data.signedUrl)
+          .createSignedUrl(filePath, 3600);
+        
+        if (error) {
+          console.error('Error loading back image:', error, 'Path:', filePath);
+        } else if (data?.signedUrl) {
+          setBackImageUrl(data.signedUrl);
+        }
       }
     }
 
