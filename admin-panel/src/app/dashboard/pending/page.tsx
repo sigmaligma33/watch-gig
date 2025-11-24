@@ -11,7 +11,9 @@ async function getApplications(status: 'pending' | 'verified' | 'denied') {
     .order('created_at', { ascending: false })
 
   if (error) {
-    console.error('Error fetching applications:', error)
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error fetching applications:', error)
+    }
     return []
   }
 

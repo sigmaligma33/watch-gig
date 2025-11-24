@@ -21,6 +21,7 @@ export function ApplicationDetailClient({ application, profile }: ApplicationDet
   const [showRejectModal, setShowRejectModal] = useState(false)
   const [frontImageUrl, setFrontImageUrl] = useState<string | null>(null)
   const [backImageUrl, setBackImageUrl] = useState<string | null>(null)
+  const [lightboxImage, setLightboxImage] = useState<{ url: string; title: string } | null>(null)
   const router = useRouter()
   const supabase = createClient()
 
@@ -43,9 +44,10 @@ export function ApplicationDetailClient({ application, profile }: ApplicationDet
           .from('verification-documents')
           .createSignedUrl(filePath, 3600);
         
-        if (error) {
+        if (error && process.env.NODE_ENV === 'development') {
           console.error('Error loading front image:', error, 'Path:', filePath);
-        } else if (data?.signedUrl) {
+        }
+        if (data?.signedUrl) {
           setFrontImageUrl(data.signedUrl);
         }
       }
@@ -56,9 +58,10 @@ export function ApplicationDetailClient({ application, profile }: ApplicationDet
           .from('verification-documents')
           .createSignedUrl(filePath, 3600);
         
-        if (error) {
+        if (error && process.env.NODE_ENV === 'development') {
           console.error('Error loading back image:', error, 'Path:', filePath);
-        } else if (data?.signedUrl) {
+        }
+        if (data?.signedUrl) {
           setBackImageUrl(data.signedUrl);
         }
       }
@@ -86,7 +89,9 @@ export function ApplicationDetailClient({ application, profile }: ApplicationDet
       router.push('/dashboard/pending')
       router.refresh()
     } catch (error) {
-      console.error('Error approving application:', error)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Error approving application:', error)
+      }
       alert('Failed to approve application')
     } finally {
       setLoading(false)
@@ -118,7 +123,9 @@ export function ApplicationDetailClient({ application, profile }: ApplicationDet
       router.push('/dashboard/pending')
       router.refresh()
     } catch (error) {
-      console.error('Error rejecting application:', error)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Error rejecting application:', error)
+      }
       alert('Failed to reject application')
     } finally {
       setLoading(false)
@@ -240,13 +247,16 @@ export function ApplicationDetailClient({ application, profile }: ApplicationDet
                     <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Front Image
                     </p>
-                    <div className="relative aspect-video bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+                    <div 
+                      className="relative aspect-video bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 cursor-pointer hover:border-green-500 transition-all duration-200 hover:shadow-lg"
+                      onClick={() => frontImageUrl && setLightboxImage({ url: frontImageUrl, title: 'Front ID Image' })}
+                    >
                       {frontImageUrl ? (
                         <Image
                           src={frontImageUrl}
                           alt="Front ID"
                           fill
-                          className="object-contain"
+                          className="object-contain hover:scale-105 transition-transform duration-200"
                           unoptimized
                         />
                       ) : (
@@ -263,13 +273,16 @@ export function ApplicationDetailClient({ application, profile }: ApplicationDet
                     <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Back Image
                     </p>
-                    <div className="relative aspect-video bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+                    <div 
+                      className="relative aspect-video bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 cursor-pointer hover:border-green-500 transition-all duration-200 hover:shadow-lg"
+                      onClick={() => backImageUrl && setLightboxImage({ url: backImageUrl, title: 'Back ID Image' })}
+                    >
                       {backImageUrl ? (
                         <Image
                           src={backImageUrl}
                           alt="Back ID"
                           fill
-                          className="object-contain"
+                          className="object-contain hover:scale-105 transition-transform duration-200"
                           unoptimized
                         />
                       ) : (
@@ -363,6 +376,50 @@ export function ApplicationDetailClient({ application, profile }: ApplicationDet
           )}
         </div>
       </div>
+
+      {/* Image Lightbox */}
+      {lightboxImage && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4 animate-in fade-in duration-200"
+          onClick={() => setLightboxImage(null)}
+        >
+          <div className="relative max-w-7xl max-h-[90vh] w-full h-full flex flex-col">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-semibold text-white">
+                {lightboxImage.title}
+              </h3>
+              <button
+                onClick={() => setLightboxImage(null)}
+                className="text-white hover:text-gray-300 transition-colors p-2"
+                aria-label="Close"
+              >
+                <XCircle className="w-8 h-8" />
+              </button>
+            </div>
+            
+            {/* Image Container */}
+            <div 
+              className="relative flex-1 rounded-lg overflow-hidden bg-gray-900"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Image
+                src={lightboxImage.url}
+                alt={lightboxImage.title}
+                fill
+                className="object-contain animate-in zoom-in-95 duration-300"
+                unoptimized
+                quality={100}
+              />
+            </div>
+
+            {/* Instructions */}
+            <p className="text-center text-gray-400 mt-4 text-sm">
+              Click outside the image to close
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Reject Modal */}
       {showRejectModal && (

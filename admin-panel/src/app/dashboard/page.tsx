@@ -10,7 +10,8 @@ async function getStats() {
     supabase.from('verification_requests').select('*', { count: 'exact', head: true }).eq('status', 'denied'),
   ])
 
-  console.log('Stats:', { 
+  if (process.env.NODE_ENV === 'development') {
+    console.log('Stats:', { 
     pending: pending.count, 
     approved: approved.count, 
     rejected: rejected.count,
@@ -18,6 +19,7 @@ async function getStats() {
     approvedError: approved.error,
     rejectedError: rejected.error
   })
+  }
 
   return {
     pending: pending.count || 0,
@@ -35,14 +37,18 @@ async function getRecentApplications() {
     .order('created_at', { ascending: false })
     .limit(5)
 
-  console.log('Recent applications query:', { 
+  if (process.env.NODE_ENV === 'development') {
+    console.log('Recent applications query:', { 
     count: applications?.length, 
     error,
     firstApp: applications?.[0]
   })
+  }
 
   if (error) {
-    console.error('Error fetching applications:', error)
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error fetching applications:', error)
+    }
     return []
   }
 
@@ -57,11 +63,13 @@ async function getRecentApplications() {
     .select('id, full_name, phone_number, business_name')
     .in('id', userIds)
 
-  console.log('Profiles query:', { 
+  if (process.env.NODE_ENV === 'development') {
+    console.log('Profiles query:', { 
     count: profiles?.length, 
     error: profileError,
     userIds 
   })
+  }
 
   // Merge profiles with applications
   const applicationsWithProfiles = applications.map(app => ({

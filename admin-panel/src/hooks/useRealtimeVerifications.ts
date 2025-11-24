@@ -19,7 +19,9 @@ export function useRealtimeVerifications() {
           table: 'verification_requests'
         },
         (payload) => {
-          console.log('Verification request changed:', payload)
+          if (process.env.NODE_ENV === 'development') {
+            console.log('Verification request changed:', payload)
+          }
           // Increment version to trigger re-fetch
           setVersion(v => v + 1)
         }
