@@ -1,7 +1,3 @@
 {
-  "buildCommand": "cd admin-panel && npm run build",
-  "outputDirectory": "admin-panel/.next",
-  "devCommand": "cd admin-panel && npm run dev",
-  "installCommand": "cd admin-panel && npm install",
   "framework": "nextjs"
 }
