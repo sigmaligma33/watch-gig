@@ -140,8 +140,8 @@ export function ApplicationDetailClient({ application, profile }: ApplicationDet
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+        <div className="flex flex-col md:flex-row md:items-center space-y-3 md:space-y-0 md:space-x-4">
           <Link href="/dashboard/pending">
             <Button variant="ghost" size="sm">
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -149,8 +149,8 @@ export function ApplicationDetailClient({ application, profile }: ApplicationDet
             </Button>
           </Link>
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Application Details</h2>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">
+            <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Application Details</h2>
+            <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 mt-1">
               Review application and verification documents
             </p>
           </div>
@@ -241,14 +241,14 @@ export function ApplicationDetailClient({ application, profile }: ApplicationDet
               </h3>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {application.front_image_url && (
                   <div>
                     <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Front Image
                     </p>
                     <div 
-                      className="relative aspect-video bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 cursor-pointer hover:border-green-500 transition-all duration-200 hover:shadow-lg"
+                      className="relative aspect-video bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-700 cursor-pointer hover:border-green-500 active:border-green-600 transition-all duration-200 hover:shadow-lg"
                       onClick={() => frontImageUrl && setLightboxImage({ url: frontImageUrl, title: 'Front ID Image' })}
                     >
                       {frontImageUrl ? (
@@ -274,7 +274,7 @@ export function ApplicationDetailClient({ application, profile }: ApplicationDet
                       Back Image
                     </p>
                     <div 
-                      className="relative aspect-video bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 cursor-pointer hover:border-green-500 transition-all duration-200 hover:shadow-lg"
+                      className="relative aspect-video bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-700 cursor-pointer hover:border-green-500 active:border-green-600 transition-all duration-200 hover:shadow-lg"
                       onClick={() => backImageUrl && setLightboxImage({ url: backImageUrl, title: 'Back ID Image' })}
                     >
                       {backImageUrl ? (
@@ -315,7 +315,7 @@ export function ApplicationDetailClient({ application, profile }: ApplicationDet
               <CardContent className="space-y-3">
                 <Button
                   variant="success"
-                  className="w-full"
+                  className="w-full min-h-[44px]"
                   onClick={handleApprove}
                   loading={loading}
                 >
@@ -325,7 +325,7 @@ export function ApplicationDetailClient({ application, profile }: ApplicationDet
 
                 <Button
                   variant="danger"
-                  className="w-full"
+                  className="w-full min-h-[44px]"
                   onClick={() => setShowRejectModal(true)}
                   disabled={loading}
                 >
@@ -424,7 +424,7 @@ export function ApplicationDetailClient({ application, profile }: ApplicationDet
       {/* Reject Modal */}
       {showRejectModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <Card className="max-w-md w-full">
+          <Card className="max-w-md w-full max-h-[90vh] overflow-y-auto">
             <CardHeader>
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                 Reject Application
@@ -435,17 +435,17 @@ export function ApplicationDetailClient({ application, profile }: ApplicationDet
                 Please provide a reason for rejecting this application:
               </p>
               <textarea
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500 min-h-[100px]"
                 rows={4}
                 value={rejectionReason}
                 onChange={(e) => setRejectionReason(e.target.value)}
                 placeholder="Enter rejection reason..."
               />
             </CardContent>
-            <CardFooter className="flex space-x-3">
+            <CardFooter className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
               <Button
                 variant="outline"
-                className="flex-1"
+                className="w-full sm:flex-1 min-h-[44px]"
                 onClick={() => {
                   setShowRejectModal(false)
                   setRejectionReason('')
@@ -456,7 +456,7 @@ export function ApplicationDetailClient({ application, profile }: ApplicationDet
               </Button>
               <Button
                 variant="danger"
-                className="flex-1"
+                className="w-full sm:flex-1 min-h-[44px]"
                 onClick={handleReject}
                 loading={loading}
               >

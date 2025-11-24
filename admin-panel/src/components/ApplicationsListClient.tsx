@@ -44,8 +44,8 @@ export default function ApplicationsListClient({ applications, title }: Applicat
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{title}</h2>
-        <p className="text-gray-600 dark:text-gray-400 mt-1">
+        <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">{title}</h2>
+        <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 mt-1">
           Review and manage verification requests
         </p>
       </div>
@@ -54,9 +54,9 @@ export default function ApplicationsListClient({ applications, title }: Applicat
         <Card>
           <CardContent className="py-12">
             <div className="text-center text-gray-500 dark:text-gray-400">
-              <FileText className="w-16 h-16 mx-auto mb-4 opacity-50" />
-              <p className="text-lg font-medium">No applications found</p>
-              <p className="text-sm mt-1">There are no {title.toLowerCase()} at the moment</p>
+              <FileText className="w-12 md:w-16 h-12 md:h-16 mx-auto mb-4 opacity-50" />
+              <p className="text-base md:text-lg font-medium">No applications found</p>
+              <p className="text-xs md:text-sm mt-1">There are no {title.toLowerCase()} at the moment</p>
             </div>
           </CardContent>
         </Card>
@@ -70,12 +70,12 @@ export default function ApplicationsListClient({ applications, title }: Applicat
 
             return (
               <Link key={app.id} href={`/dashboard/applications/${app.id}`}>
-                <Card hover className="cursor-pointer">
-                  <CardContent className="p-6">
+                <Card hover className="cursor-pointer active:scale-[0.98] transition-transform">
+                  <CardContent className="p-4 md:p-6">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-3">
-                          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-3">
+                          <h3 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white">
                             {displayName}
                           </h3>
                           <Badge
@@ -92,33 +92,33 @@ export default function ApplicationsListClient({ applications, title }: Applicat
                         </div>
                         
                         {app.profiles?.business_name && (
-                          <p className="text-sm text-gray-600 dark:text-gray-400 mb-1 flex items-center gap-2">
-                            <Building className="w-4 h-4" />
-                            {app.profiles.business_name}
+                          <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400 mb-1 flex items-center gap-2">
+                            <Building className="w-3 md:w-4 h-3 md:h-4 flex-shrink-0" />
+                            <span className="truncate">{app.profiles.business_name}</span>
                           </p>
                         )}
                         
-                        <p className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2">
-                          <Phone className="w-4 h-4" />
-                          {app.profiles?.phone_number || 'N/A'}
+                        <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2">
+                          <Phone className="w-3 md:w-4 h-3 md:h-4 flex-shrink-0" />
+                          <span>{app.profiles?.phone_number || 'N/A'}</span>
                         </p>
                         
-                        <div className="flex items-center gap-4 mt-3 text-xs text-gray-500 dark:text-gray-500">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mt-3 text-xs text-gray-500 dark:text-gray-500">
                           <span className="flex items-center gap-1">
-                            <Calendar className="w-3 h-3" />
+                            <Calendar className="w-3 h-3 flex-shrink-0" />
                             Submitted: {new Date(app.created_at).toLocaleDateString()}
                           </span>
                           {app.reviewed_at && (
                             <span className="flex items-center gap-1">
-                              <Calendar className="w-3 h-3" />
+                              <Calendar className="w-3 h-3 flex-shrink-0" />
                               Reviewed: {new Date(app.reviewed_at).toLocaleDateString()}
                             </span>
                           )}
                         </div>
 
                         {app.rejection_reason && (
-                          <div className="mt-3 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
-                            <p className="text-sm text-red-800 dark:text-red-300">
+                          <div className="mt-3 p-2 md:p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
+                            <p className="text-xs md:text-sm text-red-800 dark:text-red-300 break-words">
                               <strong>Rejection Reason:</strong> {app.rejection_reason}
                             </p>
                           </div>
