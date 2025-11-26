@@ -90,6 +90,7 @@ export function ApplicationDetailClient({ application, profile }: ApplicationDet
           role: "provider"
         })
         .eq('id', application.user_id)
+      console.log(application.user_id)
 
       if (error || error2) throw error || error2
 
