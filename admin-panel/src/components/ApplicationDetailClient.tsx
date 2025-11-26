@@ -119,22 +119,8 @@ export function ApplicationDetailClient({
         console.error("Update errors:", {
           error,
           error2,
-          user_id: application.user_id,
         });
         throw error || error2;
-      }
-
-      if (profileData && profileData.length === 0) {
-        console.warn(
-          "No profile was updated for user_id:",
-          application.user_id,
-        );
-      } else {
-        console.log("Profile updated successfully:", {
-          user_id: application.user_id,
-          user_role: profileData[0].role,
-          profileData,
-        });
       }
 
       router.push("/dashboard/pending");
