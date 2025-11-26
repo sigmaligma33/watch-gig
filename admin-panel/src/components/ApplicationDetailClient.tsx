@@ -89,7 +89,7 @@ export function ApplicationDetailClient({ application, profile }: ApplicationDet
         .update({
           role: "provider"
         })
-        .eq('id', application.user_id)
+        .eq('id', application.user_id) && console.log("Updated")
       console.log(application.user_id)
 
       if (error || error2) throw error || error2
