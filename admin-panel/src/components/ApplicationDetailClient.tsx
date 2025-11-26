@@ -83,8 +83,15 @@ export function ApplicationDetailClient({ application, profile }: ApplicationDet
           reviewed_by: user?.id,
         })
         .eq('id', application.id)
+      
+      const { error: error2 } = await supabase
+        .from("profiles")
+        .update({
+          role: "provider"
+        })
+        .eq('id', application.user_id)
 
-      if (error) throw error
+      if (error || error2) throw error || error2
 
       router.push('/dashboard/pending')
       router.refresh()
