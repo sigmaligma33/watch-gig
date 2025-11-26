@@ -2,6 +2,10 @@
 
 Admin panel for reviewing and verifying service provider applications.
 
+## ⚠️ IMPORTANT: Recent Bug Fix
+
+**A critical bug affecting profile updates has been fixed!** If you approved applications before this fix, user roles may not have been updated. See [QUICK_FIX_SUMMARY.md](./QUICK_FIX_SUMMARY.md) for details and migration steps.
+
 ## Features
 
 - Admin authentication
@@ -46,3 +50,37 @@ The admin panel connects to the existing GigHub Supabase database:
 - `profiles` table: User profiles with role field (admin role set manually)
 - `verification_requests` table: Pending/approved/rejected verification applications
 - Storage buckets: Documents stored with user UUID as folder name
+
+## 🧪 Testing & Diagnostics
+
+### Test Profile Updates
+```bash
+node scripts/test-profile-update.js
+```
+Tests the profile update functionality to ensure users are properly promoted to provider role.
+
+### Database Diagnostics
+```bash
+node scripts/diagnose-database.js
+```
+Comprehensive database health check:
+- Verifies table access
+- Checks data integrity
+- Tests update permissions
+- Identifies misconfigured users
+- Validates storage bucket
+
+### Check for Affected Users
+If applications were approved before the bug fix, run this SQL in Supabase:
+```sql
+SELECT vr.user_id, p.full_name, p.role, vr.status
+FROM verification_requests vr
+JOIN profiles p ON p.id = vr.user_id
+WHERE vr.status = 'verified' AND p.role != 'provider' AND p.role != 'admin';
+```
+
+## 📚 Documentation
+
+- [QUICK_FIX_SUMMARY.md](./QUICK_FIX_SUMMARY.md) - Quick reference for the profile update bug fix
+- [PROFILE_UPDATE_BUG_REPORT.md](./PROFILE_UPDATE_BUG_REPORT.md) - Detailed technical analysis and prevention measures
+- [DEPLOYMENT.md](./DEPLOYMENT.md) - Full deployment guide

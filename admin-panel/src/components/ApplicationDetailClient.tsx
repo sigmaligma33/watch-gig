@@ -109,11 +109,12 @@ export function ApplicationDetailClient({
 
       const { data: profileData, error: error2 } = await supabase
         .from("profiles")
-        .update({
-          role: "provider",
-        })
+        // .update({
+        //   role: "provider",
+        // })
+        .select("*")
         .eq("id", application.user_id)
-        .select();
+        .single();
 
       if (error || error2) {
         console.error("Update errors:", {
