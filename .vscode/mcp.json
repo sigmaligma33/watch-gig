@@ -53,6 +53,5 @@
       "tools": ["ask_question", "read_wiki_contents", "read_wiki_structure"]
     }
   }
-
-	}
 }
+
