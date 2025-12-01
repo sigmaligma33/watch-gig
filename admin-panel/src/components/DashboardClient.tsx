@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader } from '@/components/ui/Card'
-import { FileText, CheckCircle, XCircle, Clock } from 'lucide-react'
+import { FileText, CheckCircle, XCircle, Clock, Briefcase } from 'lucide-react'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/Badge'
 import { useRealtimeVerifications } from '@/hooks/useRealtimeVerifications'
@@ -12,6 +12,8 @@ interface Stats {
   pending: number
   approved: number
   rejected: number
+  pendingServices?: number
+  verifiedServices?: number
 }
 
 interface Application {
@@ -69,6 +71,14 @@ export default function DashboardClient({ initialStats, initialApplications }: D
       bgColor: 'bg-red-100 dark:bg-red-900/30',
       href: '/dashboard/rejected',
     },
+    {
+      title: 'Pending Services',
+      value: stats.pendingServices || 0,
+      icon: Briefcase,
+      color: 'text-orange-600',
+      bgColor: 'bg-orange-100 dark:bg-orange-900/30',
+      href: '/dashboard/services',
+    },
   ]
 
   return (
@@ -81,24 +91,24 @@ export default function DashboardClient({ initialStats, initialApplications }: D
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         {statCards.map((stat) => {
           const Icon = stat.icon
           return (
             <Link key={stat.title} href={stat.href}>
               <Card hover className="cursor-pointer">
-                <CardContent className="p-6">
+                <CardContent className="p-4 md:p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      <p className="text-xs md:text-sm font-medium text-gray-600 dark:text-gray-400">
                         {stat.title}
                       </p>
-                      <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">
+                      <p className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mt-2">
                         {stat.value}
                       </p>
                     </div>
-                    <div className={`p-3 rounded-full ${stat.bgColor}`}>
-                      <Icon className={`w-6 h-6 ${stat.color}`} />
+                    <div className={`p-2 md:p-3 rounded-full ${stat.bgColor}`}>
+                      <Icon className={`w-5 h-5 md:w-6 md:h-6 ${stat.color}`} />
                     </div>
                   </div>
                 </CardContent>

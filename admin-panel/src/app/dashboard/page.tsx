@@ -4,10 +4,12 @@ import DashboardClient from '@/components/DashboardClient'
 async function getStats() {
   const supabase = await createClient()
   
-  const [pending, approved, rejected] = await Promise.all([
+  const [pending, approved, rejected, pendingServices, verifiedServices] = await Promise.all([
     supabase.from('verification_requests').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
     supabase.from('verification_requests').select('*', { count: 'exact', head: true }).eq('status', 'verified'),
     supabase.from('verification_requests').select('*', { count: 'exact', head: true }).eq('status', 'denied'),
+    supabase.from('service_listings').select('*', { count: 'exact', head: true }).eq('is_verified', false),
+    supabase.from('service_listings').select('*', { count: 'exact', head: true }).eq('is_verified', true),
   ])
 
   if (process.env.NODE_ENV === 'development') {
@@ -15,6 +17,8 @@ async function getStats() {
     pending: pending.count, 
     approved: approved.count, 
     rejected: rejected.count,
+    pendingServices: pendingServices.count,
+    verifiedServices: verifiedServices.count,
     pendingError: pending.error,
     approvedError: approved.error,
     rejectedError: rejected.error
@@ -25,6 +29,8 @@ async function getStats() {
     pending: pending.count || 0,
     approved: approved.count || 0,
     rejected: rejected.count || 0,
+    pendingServices: pendingServices.count || 0,
+    verifiedServices: verifiedServices.count || 0,
   }
 }
 

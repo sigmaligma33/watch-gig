@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, FileText, CheckCircle, XCircle, LogOut, X } from 'lucide-react'
+import { LayoutDashboard, FileText, CheckCircle, XCircle, LogOut, X, Briefcase } from 'lucide-react'
 
 interface SidebarProps {
   onLogout?: () => void
@@ -33,6 +33,11 @@ export function Sidebar({ onLogout, isOpen = false, onClose }: SidebarProps) {
       name: 'Rejected',
       href: '/dashboard/rejected',
       icon: XCircle,
+    },
+    {
+      name: 'Services',
+      href: '/dashboard/services',
+      icon: Briefcase,
     },
   ]
 
