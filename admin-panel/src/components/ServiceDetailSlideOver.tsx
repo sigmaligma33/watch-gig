@@ -58,8 +58,10 @@ export default function ServiceDetailSlideOver({ service, isOpen, onClose }: Ser
         .from('service_listings')
         .update({
           is_verified: newVerifiedStatus,
+          is_active: newVerifiedStatus ? true : service.is_active, // Activate service when verified
           verified_by: newVerifiedStatus ? user?.id : null,
           verified_at: newVerifiedStatus ? new Date().toISOString() : null,
+          updated_at: new Date().toISOString(),
         })
         .eq('id', service.id)
 

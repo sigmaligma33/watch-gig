@@ -111,6 +111,8 @@ export function ApplicationDetailClient({
         .from("profiles")
         .update({
           role: "provider",
+          national_id_verified: true,
+          updated_at: new Date().toISOString(),
         })
         .eq("id", application.user_id)
         .select("*");
